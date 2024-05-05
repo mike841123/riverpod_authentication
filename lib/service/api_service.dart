@@ -4,6 +4,8 @@ import 'package:dio/dio.dart';
 import 'package:retrofit/dio.dart';
 import '../config/app_config.dart';
 import '../domain/ow_api.dart';
+import '../domain/request/member_page_request/asset_info_list_request.dart';
+import '../domain/response/flow_page_response/asset_info_list_response.dart';
 import '../domain/response/home_page_response/banner_list_response.dart';
 import '../domain/response/login_page_response/login_response.dart';
 import '../domain/response/public_response/normal_response.dart';
@@ -13,9 +15,9 @@ import '../domain/response/public_response/user_info_response.dart';
 class ApiService {
   final Dio dio = Dio();
 
-  initDio() {
+  ApiService() {
     // 請求設定
-    dio.options.connectTimeout = const Duration(seconds: 10);
+    dio.options.connectTimeout = const Duration(seconds: 4);
     // api 的 AOP
     if (dio.interceptors.isNotEmpty) {
       dio.interceptors.clear();
@@ -72,6 +74,12 @@ class ApiService {
   /// 更新頭像
   Future<NormalResponse> memberModifyAvatar(String avatar) async {
     final HttpResponse<NormalResponse> response = await OwApi(dio).memberModifyAvatar(AppConfig.token, avatar);
+    return response.data;
+  }
+
+  /// 獲取資金流水列表
+  Future<AssetInfoListResponse> getAssetCashList(AssetInfoListRequest request) async {
+    final HttpResponse<AssetInfoListResponse> response = await OwApi(dio).getAssetCashList(AppConfig.token, request.page, request.limit, request.type);
     return response.data;
   }
 }

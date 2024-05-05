@@ -6,4 +6,5 @@ class RouteLocation {
 
   static String get home => '/home';
   static String get login => '/login';
+  static String get flow => '/flow';
 }

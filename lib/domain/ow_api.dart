@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart' hide Headers;
+import 'package:infinite_scroll/domain/response/flow_page_response/asset_info_list_response.dart';
 import 'package:infinite_scroll/domain/response/home_page_response/banner_list_response.dart';
 import 'package:infinite_scroll/domain/response/login_page_response/login_response.dart';
 import 'package:infinite_scroll/domain/response/public_response/normal_response.dart';
@@ -10,7 +11,7 @@ import 'package:retrofit/retrofit.dart';
 
 part 'ow_api.g.dart';
 
-@RestApi(baseUrl: "")
+@RestApi(baseUrl: "https://pike-ts.mxkjtw.com/baseApi")
 abstract class OwApi {
   factory OwApi(Dio dio) = _OwApi;
 
@@ -39,5 +40,11 @@ abstract class OwApi {
   /// 更新會員頭像
   @POST("/memberuser/member-modify-avatar")
   Future<HttpResponse<NormalResponse>> memberModifyAvatar(@Header("authorization") String token, @Field() String avatar,
+      {@CancelRequest() CancelToken? cancelToken});
+
+  /// 獲取資金流水列表
+  @GET("/assetinfolog/chain-log?page={page}&limit={limit}&assetType={assetType}")
+  Future<HttpResponse<AssetInfoListResponse>> getAssetCashList(
+      @Header("authorization") String token, @Path() int page, @Path() int limit, @Path() int assetType,
       {@CancelRequest() CancelToken? cancelToken});
 }

@@ -3,9 +3,11 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll/model/providers/user_providers.dart';
 import 'package:infinite_scroll/pages/home/providers/home_providers.dart';
 
+import '../../config/routes/routes_location.dart';
 import '../../domain/response/home_page_response/banner_list_response.dart';
 
 class HomePage extends StatelessWidget {
@@ -73,6 +75,13 @@ class HomePage extends StatelessWidget {
               }).toList(),
             );
           }),
+          const Gap(20),
+          ElevatedButton(
+            onPressed: () {
+              context.push(RouteLocation.flow);
+            },
+            child: Text("go to flow page"),
+          )
         ],
       ),
     );

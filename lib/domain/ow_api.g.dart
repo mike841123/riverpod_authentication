@@ -13,7 +13,7 @@ class _OwApi implements OwApi {
     this._dio, {
     this.baseUrl,
   }) {
-    baseUrl ??= '';
+    baseUrl ??= 'https://pike-ts.mxkjtw.com/baseApi';
   }
 
   final Dio _dio;
@@ -227,6 +227,43 @@ class _OwApi implements OwApi {
               baseUrl,
             ))));
     final value = NormalResponse.fromJson(_result.data!);
+    final httpResponse = HttpResponse(value, _result);
+    return httpResponse;
+  }
+
+  @override
+  Future<HttpResponse<AssetInfoListResponse>> getAssetCashList(
+    String token,
+    int page,
+    int limit,
+    int assetType, {
+    CancelToken? cancelToken,
+  }) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    queryParameters.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{r'authorization': token};
+    _headers.removeWhere((k, v) => v == null);
+    const Map<String, dynamic>? _data = null;
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<HttpResponse<AssetInfoListResponse>>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/assetinfolog/chain-log?page=${page}&limit=${limit}&assetType=${assetType}',
+              queryParameters: queryParameters,
+              data: _data,
+              cancelToken: cancelToken,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    final value = AssetInfoListResponse.fromJson(_result.data!);
     final httpResponse = HttpResponse(value, _result);
     return httpResponse;
   }
