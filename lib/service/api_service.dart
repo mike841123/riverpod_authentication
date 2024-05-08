@@ -1,8 +1,11 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:go_router/go_router.dart';
+import 'package:infinite_scroll/config/routes/routes_location.dart';
 import 'package:retrofit/dio.dart';
 import '../config/app_config.dart';
+import '../config/routes/routes_provider.dart';
 import '../domain/ow_api.dart';
 import '../domain/request/member_page_request/asset_info_list_request.dart';
 import '../domain/response/flow_page_response/asset_info_list_response.dart';
@@ -28,7 +31,13 @@ class ApiService {
           return handler.next(options);
         },
         onResponse: (response, handler) {
-          print(response);
+          print(response.data);
+          switch (response.data["code"]) {
+            case 403:
+              AppConfig.token = "";
+              navigationKey.currentContext?.go(RouteLocation.login);
+              // getIt<StateService>().navigatorContext.go(RouteLocation.login);
+          }
           return handler.next(response);
         },
         onError: (DioException e, handler) {

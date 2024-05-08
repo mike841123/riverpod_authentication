@@ -21,6 +21,14 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _captchaController = TextEditingController();
 
   @override
+  void dispose() {
+    _usernameController.dispose();
+    _pwdController.dispose();
+    _captchaController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -71,7 +79,7 @@ class _LoginPageState extends State<LoginPage> {
                           ? null
                           : () {
                               ref.read(loginProvider.notifier).login(_usernameController.text, _pwdController.text, _captchaController.text, () {
-                                context.push(RouteLocation.home);
+                                context.go(RouteLocation.home);
                               });
                             },
                       child: const Text("Log in"),

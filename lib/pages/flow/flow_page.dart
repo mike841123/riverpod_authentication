@@ -101,7 +101,7 @@ class _FlowPageState extends State<FlowPage> {
                           return FlowItem(title: assetInfo[index].title ?? "", date: assetInfo[index].title ?? "", price: assetInfo[index].price ?? 0);
                         },
                         separatorBuilder: (context, index) {
-                          return Divider();
+                          return const Divider();
                         },
                         itemCount: assetInfo.length,
                       ),

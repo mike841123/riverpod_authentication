@@ -13,7 +13,7 @@ class _OwApi implements OwApi {
     this._dio, {
     this.baseUrl,
   }) {
-    baseUrl ??= 'https://pike-ts.mxkjtw.com/baseApi';
+    baseUrl ??= '';
   }
 
   final Dio _dio;
