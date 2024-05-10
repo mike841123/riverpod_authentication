@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:infinite_scroll/domain/response/public_response/digital_bank_response.dart';
 import 'package:infinite_scroll/domain/response/public_response/normal_response.dart';
 import 'package:infinite_scroll/domain/response/public_response/upload_image_response.dart';
 import 'package:infinite_scroll/domain/response/public_response/user_info_response.dart';
@@ -29,5 +30,12 @@ class UserNotifier extends StateNotifier<UserState> {
         getUserInfo();
       }
     }
+  }
+
+  Future<DigitalBankResult> getDigitalBank() async {
+    final repository = ref.read(userRepositoryProvider);
+    DigitalBankResult digitalBankResult = await repository.getDigitalBankResult();
+    state = state.copyWith(digitalBankResult: digitalBankResult);
+    return digitalBankResult;
   }
 }

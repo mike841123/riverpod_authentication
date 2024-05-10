@@ -81,7 +81,14 @@ class HomePage extends StatelessWidget {
               context.push(RouteLocation.flow);
             },
             child: Text("go to flow page"),
-          )
+          ),
+          const Gap(20),
+          ElevatedButton(
+            onPressed: () {
+              context.push(RouteLocation.invested);
+            },
+            child: Text("go to invested page"),
+          ),
         ],
       ),
     );

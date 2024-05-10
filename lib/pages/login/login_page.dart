@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
@@ -34,62 +36,83 @@ class _LoginPageState extends State<LoginPage> {
       appBar: AppBar(
         title: const Text("login"),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            CustomTextField(hintText: "請輸入帳號", title: "帳號", width: MediaQuery.sizeOf(context).width - 40, controller: _usernameController),
-            const Gap(20),
-            CustomTextField(hintText: "請輸入密碼", title: "密碼", width: MediaQuery.sizeOf(context).width - 40, controller: _pwdController),
-            const Gap(20),
-            Consumer(
-              builder: (context, ref, child) {
-                final randomState = ref.watch(randomProvider);
-                return CustomTextField(
-                  hintText: "請輸入驗證碼",
-                  title: "驗證碼",
-                  width: 260,
-                  controller: _captchaController,
-                  backWidget: InkWell(
-                    onTap: () {
-                      ref.read(randomProvider.notifier).getRandomCaptcha();
-                    },
-                    child: Image.network(
-                      'https://pike-ts.mxkjtw.com/baseApi/public/code?randomStr=$randomState',
-                      fit: BoxFit.fill,
+      body: Center(
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 10,horizontal: 10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              CustomTextField(hintText: "請輸入帳號", title: "帳號", width: 260, controller: _usernameController),
+              const Gap(20),
+              CustomTextField(hintText: "請輸入密碼", title: "密碼", width: 260, controller: _pwdController),
+              const Gap(20),
+              Consumer(
+                builder: (context, ref, child) {
+                  final randomState = ref.watch(randomProvider);
+                  return SizedBox(
+                    width: 260,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text("驗證碼"),
+                        const Gap(10),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            CustomTextField(
+                              hintText: "請輸入驗證碼",
+                              title: "",
+                              width: 172,
+                              controller: _captchaController,
+                            ),
+                            const Gap(10),
+                            SizedBox(
+                              width: 72,
+                              child: InkWell(
+                                onTap: () {
+                                  ref.read(randomProvider.notifier).getRandomCaptcha();
+                                },
+                                child: Image.network(
+                                  'https://pike-ts.mxkjtw.com/baseApi/public/code?randomStr=$randomState',
+                                  fit: BoxFit.fill,
+                                  height: 40,
+                                  gaplessPlayback: true,
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+              const Gap(20),
+              Consumer(builder: (context, ref, child) {
+                final loginState = ref.watch(loginProvider);
+                return Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    SizedBox(
+                      width: 200,
                       height: 40,
-                      gaplessPlayback: true,
+                      child: ElevatedButton(
+                        onPressed: loginState is LoginStateLoading
+                            ? null
+                            : () {
+                                ref.read(loginProvider.notifier).login(_usernameController.text, _pwdController.text, _captchaController.text, () {
+                                  context.go(RouteLocation.home);
+                                });
+                              },
+                        child: const Text("Log in"),
+                      ),
                     ),
-                  ),
+                    if (loginState is LoginStateLoading) const CircularProgressIndicator(), // 加載指示器
+                  ],
                 );
-              },
-            ),
-            const Gap(20),
-            Consumer(builder: (context, ref, child) {
-              final loginState = ref.watch(loginProvider);
-              return Stack(
-                alignment: Alignment.center,
-                children: [
-                  SizedBox(
-                    width: 200,
-                    height: 40,
-                    child: ElevatedButton(
-                      onPressed: loginState is LoginStateLoading
-                          ? null
-                          : () {
-                              ref.read(loginProvider.notifier).login(_usernameController.text, _pwdController.text, _captchaController.text, () {
-                                context.go(RouteLocation.home);
-                              });
-                            },
-                      child: const Text("Log in"),
-                    ),
-                  ),
-                  if (loginState is LoginStateLoading) const CircularProgressIndicator(), // 加載指示器
-                ],
-              );
-            })
-          ],
+              })
+            ],
+          ),
         ),
       ),
     );

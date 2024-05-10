@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll/config/routes/routes_location.dart';
 import 'package:infinite_scroll/config/routes/routes_provider.dart';
 import 'package:infinite_scroll/pages/flow/flow_page.dart';
+import 'package:infinite_scroll/pages/invested/invested_page.dart';
 
 import '../../pages/home/home_page.dart';
 import '../../pages/login/login_page.dart';
@@ -27,6 +28,13 @@ final appRoutes = [
     parentNavigatorKey: navigationKey,
     builder: (BuildContext context, GoRouterState state) {
       return const FlowPage();
+    },
+  ),
+  GoRoute(
+    path: RouteLocation.invested,
+    parentNavigatorKey: navigationKey,
+    builder: (BuildContext context, GoRouterState state) {
+      return const InvestedPage();
     },
   ),
 ];

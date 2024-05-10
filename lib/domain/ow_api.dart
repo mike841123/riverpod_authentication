@@ -1,12 +1,15 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart' hide Headers;
+import 'package:infinite_scroll/domain/response/api_response.dart';
 import 'package:infinite_scroll/domain/response/flow_page_response/asset_info_list_response.dart';
 import 'package:infinite_scroll/domain/response/home_page_response/banner_list_response.dart';
 import 'package:infinite_scroll/domain/response/login_page_response/login_response.dart';
+import 'package:infinite_scroll/domain/response/public_response/digital_bank_response.dart';
 import 'package:infinite_scroll/domain/response/public_response/normal_response.dart';
 import 'package:infinite_scroll/domain/response/public_response/upload_image_response.dart';
 import 'package:infinite_scroll/domain/response/public_response/user_info_response.dart';
+import 'package:infinite_scroll/domain/response/save_coin_response/save_coin_rate_response.dart';
 import 'package:retrofit/retrofit.dart';
 
 part 'ow_api.g.dart';
@@ -46,5 +49,19 @@ abstract class OwApi {
   @GET("/assetinfolog/chain-log?page={page}&limit={limit}&assetType={assetType}")
   Future<HttpResponse<AssetInfoListResponse>> getAssetCashList(
       @Header("authorization") String token, @Path() int page, @Path() int limit, @Path() int assetType,
+      {@CancelRequest() CancelToken? cancelToken});
+
+  /// 獲取投資天數利率設定
+  @GET("/invested/getRate")
+  Future<HttpResponse<SaveCoinRateResponse>> getSaveCoinRate(@Header("authorization") String token, {@CancelRequest() CancelToken? cancelToken});
+
+  /// 數字銀行訊息
+  @GET("/assetinfo/digital-bank")
+  Future<HttpResponse<DigitalBankResponse>> getDigitalBank(@Header("authorization") String token, {@CancelRequest() CancelToken? cancelToken});
+
+  /// 發送存幣生息訂單
+  @POST("/invested/send-order")
+  Future<HttpResponse<ApiResponse<String>>> sendSaveCoin(
+      @Header("authorization") String token, @Field() int id, @Field() String investedAmount, @Field() int autoSubscribe, @Field() String payPassword,
       {@CancelRequest() CancelToken? cancelToken});
 }

@@ -8,12 +8,16 @@ import '../config/app_config.dart';
 import '../config/routes/routes_provider.dart';
 import '../domain/ow_api.dart';
 import '../domain/request/member_page_request/asset_info_list_request.dart';
+import '../domain/request/save_coin_request/send_save_coin_request.dart';
+import '../domain/response/api_response.dart';
 import '../domain/response/flow_page_response/asset_info_list_response.dart';
 import '../domain/response/home_page_response/banner_list_response.dart';
 import '../domain/response/login_page_response/login_response.dart';
+import '../domain/response/public_response/digital_bank_response.dart';
 import '../domain/response/public_response/normal_response.dart';
 import '../domain/response/public_response/upload_image_response.dart';
 import '../domain/response/public_response/user_info_response.dart';
+import '../domain/response/save_coin_response/save_coin_rate_response.dart';
 
 class ApiService {
   final Dio dio = Dio();
@@ -36,7 +40,7 @@ class ApiService {
             case 403:
               AppConfig.token = "";
               navigationKey.currentContext?.go(RouteLocation.login);
-              // getIt<StateService>().navigatorContext.go(RouteLocation.login);
+            // getIt<StateService>().navigatorContext.go(RouteLocation.login);
           }
           return handler.next(response);
         },
@@ -88,7 +92,26 @@ class ApiService {
 
   /// 獲取資金流水列表
   Future<AssetInfoListResponse> getAssetCashList(AssetInfoListRequest request) async {
-    final HttpResponse<AssetInfoListResponse> response = await OwApi(dio).getAssetCashList(AppConfig.token, request.page, request.limit, request.type);
+    final HttpResponse<AssetInfoListResponse> response = await OwApi(dio).getAssetCashList("", request.page, request.limit, request.type);
+    return response.data;
+  }
+
+  /// 獲取投資天數利率設定
+  Future<SaveCoinRateResponse> getSaveCoinRate() async {
+    final HttpResponse<SaveCoinRateResponse> response = await OwApi(dio).getSaveCoinRate(AppConfig.token);
+    return response.data;
+  }
+
+  /// 數字銀行訊息
+  Future<DigitalBankResponse> getDigitalBank() async {
+    final HttpResponse<DigitalBankResponse> response = await OwApi(dio).getDigitalBank(AppConfig.token);
+    return response.data;
+  }
+
+  /// 發送存幣生息訂單
+  Future<ApiResponse<String>> sendSaveCoin(SendSaveCoinRequest request) async {
+    final HttpResponse<ApiResponse<String>> response =
+    await OwApi(dio).sendSaveCoin(AppConfig.token, request.id, request.investedAmount, request.autoSubscribe, request.payPassword);
     return response.data;
   }
 }

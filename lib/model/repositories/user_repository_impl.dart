@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:infinite_scroll/domain/response/public_response/digital_bank_response.dart';
 import 'package:infinite_scroll/domain/response/public_response/normal_response.dart';
 import 'package:infinite_scroll/domain/response/public_response/upload_image_response.dart';
 import 'package:infinite_scroll/domain/response/public_response/user_info_response.dart';
@@ -43,6 +44,17 @@ class UserRepositoryImpl implements UserRepository {
       }
     }
     return response;
+  }
+
+  @override
+  Future<DigitalBankResult> getDigitalBankResult() async {
+    try {
+      DigitalBankResponse response = await getIt<ApiService>().getDigitalBank();
+      return response.data ?? DigitalBankResult();
+    } catch (e) {
+      print(e);
+      throw Exception();
+    }
   }
 }
 

@@ -12,9 +12,7 @@ class FlowRepositoryImpl extends FlowRepository {
       AssetInfoListResponse response = await getIt<ApiService>().getAssetCashList(request);
       return response;
     } catch (e) {
-      print("12121122");
       print(e);
-
       throw Exception();
     }
   }
