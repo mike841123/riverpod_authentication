@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll/pages/invested/widgets/save_dialog.dart';
+import '../../../config/routes/routes_location.dart';
 import '../../../domain/response/public_response/digital_bank_response.dart';
 import '../../../domain/response/save_coin_response/save_coin_rate_response.dart';
 import '../../../model/providers/user_providers.dart';
@@ -27,11 +29,11 @@ class CoinItem extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Row(
+          Row(
             children: [
-              Icon(Icons.circle_notifications),
-              Gap(10),
-              Text("FIL"),
+              const Icon(Icons.circle_notifications),
+              const Gap(10),
+              Text(coinType.name),
             ],
           ),
           const Gap(20),
@@ -82,7 +84,7 @@ class CoinItem extends StatelessWidget {
           ),
           const Gap(20),
           const Text("年利率："),
-          Text("年利率："),
+          const Text("年利率："),
           const Gap(20),
           Consumer(builder: (context, ref, child) {
             return Row(
@@ -99,7 +101,12 @@ class CoinItem extends StatelessWidget {
                   child: const Text("存幣"),
                 ),
                 const Gap(6),
-                ElevatedButton(onPressed: () {}, child: const Text("紀錄")),
+                ElevatedButton(
+                  onPressed: () {
+                    context.push(RouteLocation.investedRecord);
+                  },
+                  child: const Text("紀錄"),
+                ),
               ],
             );
           }),

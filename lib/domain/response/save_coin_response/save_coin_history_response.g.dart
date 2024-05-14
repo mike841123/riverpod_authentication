@@ -71,7 +71,7 @@ SaveCoinHistory _$SaveCoinHistoryFromJson(Map<String, dynamic> json) =>
       redeemDate: json['redeemDate'] as String? ?? "",
       payInterestDate: json['payInterestDate'] as String? ?? "",
       createTime: json['createTime'] as String? ?? "",
-    );
+    )..currentPage = (json['currentPage'] as num?)?.toInt() ?? 0;
 
 Map<String, dynamic> _$SaveCoinHistoryToJson(SaveCoinHistory instance) =>
     <String, dynamic>{
@@ -91,4 +91,5 @@ Map<String, dynamic> _$SaveCoinHistoryToJson(SaveCoinHistory instance) =>
       'redeemDate': instance.redeemDate,
       'payInterestDate': instance.payInterestDate,
       'createTime': instance.createTime,
+      'currentPage': instance.currentPage,
     };

@@ -9,6 +9,7 @@ import 'package:infinite_scroll/domain/response/public_response/digital_bank_res
 import 'package:infinite_scroll/domain/response/public_response/normal_response.dart';
 import 'package:infinite_scroll/domain/response/public_response/upload_image_response.dart';
 import 'package:infinite_scroll/domain/response/public_response/user_info_response.dart';
+import 'package:infinite_scroll/domain/response/save_coin_response/save_coin_history_response.dart';
 import 'package:infinite_scroll/domain/response/save_coin_response/save_coin_rate_response.dart';
 import 'package:retrofit/retrofit.dart';
 
@@ -63,5 +64,16 @@ abstract class OwApi {
   @POST("/invested/send-order")
   Future<HttpResponse<ApiResponse<String>>> sendSaveCoin(
       @Header("authorization") String token, @Field() int id, @Field() String investedAmount, @Field() int autoSubscribe, @Field() String payPassword,
+      {@CancelRequest() CancelToken? cancelToken});
+
+  /// 獲取存幣生息歷史紀錄
+  @GET("/invested/getRecordPage?page={page}&limit={limit}{assetType}{optionType}{status}{startTime}{endTime}")
+  Future<HttpResponse<SaveCoinHistoryResponse>> getSaveCoinHistory(@Header("authorization") String token, @Path() int page, @Path() int limit,
+      @Path() String? assetType, @Path() String? optionType, @Path() String? status, @Path() String? startTime, @Path() String? endTime,
+      {@CancelRequest() CancelToken? cancelToken});
+
+  /// 修改自動申購
+  @POST("/invested/updateAutoSubscribe")
+  Future<HttpResponse<NormalResponse>> updateAutoSubscribe(@Header("authorization") String token, @Field() int id, @Field() int autoSubscribe,
       {@CancelRequest() CancelToken? cancelToken});
 }

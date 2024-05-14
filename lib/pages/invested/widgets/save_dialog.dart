@@ -127,7 +127,7 @@ class _SaveDialogState extends ConsumerState<SaveDialog> {
                 color: Colors.white,
               ),
             ),
-            Gap(10),
+            const Gap(10),
             CheckWidget(
               _check,
               text: "是否自動",

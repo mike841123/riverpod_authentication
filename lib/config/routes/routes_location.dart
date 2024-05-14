@@ -8,4 +8,5 @@ class RouteLocation {
   static String get login => '/login';
   static String get flow => '/flow';
   static String get invested => '/invested';
+  static String get investedRecord => '/investedRecord';
 }

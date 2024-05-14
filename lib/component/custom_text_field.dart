@@ -33,50 +33,53 @@ class CustomTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        title == ""
-            ? Container()
-            : Column(
-                children: [
-                  Text(
-                    title,
-                    style: TextStyle(
-                      color: inputType == InputType.light ? Colors.black : Colors.white,
+    return SizedBox(
+      width: width ?? 300,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          title == ""
+              ? Container()
+              : Column(
+                  children: [
+                    Text(
+                      title,
+                      style: TextStyle(
+                        color: inputType == InputType.light ? Colors.black : Colors.white,
+                      ),
                     ),
-                  ),
-                  const Gap(10),
-                ],
+                    const Gap(10),
+                  ],
+                ),
+          TextField(
+            readOnly: readOnly,
+            onTapOutside: (event) {
+              FocusManager.instance.primaryFocus?.unfocus();
+            },
+            autocorrect: false,
+            controller: controller,
+            decoration: InputDecoration(
+              filled: true,
+              fillColor: Colors.grey[200],
+              contentPadding: const EdgeInsets.only(top: 12, bottom: 12, left: 12, right: 12),
+              enabledBorder: OutlineInputBorder(
+                borderSide: const BorderSide(color: Colors.grey),
+                borderRadius: BorderRadius.circular(10),
               ),
-        TextField(
-          readOnly: readOnly,
-          onTapOutside: (event) {
-            FocusManager.instance.primaryFocus?.unfocus();
-          },
-          autocorrect: false,
-          controller: controller,
-          decoration: InputDecoration(
-            filled: true,
-            fillColor: Colors.grey[200],
-            contentPadding: const EdgeInsets.only(top: 12, bottom: 12, left: 12, right: 12),
-            enabledBorder: OutlineInputBorder(
-              borderSide: const BorderSide(color: Colors.grey),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderSide: const BorderSide(
-                color: Colors.black,
-                width: 2,
+              focusedBorder: OutlineInputBorder(
+                borderSide: const BorderSide(
+                  color: Colors.black,
+                  width: 2,
+                ),
+                borderRadius: BorderRadius.circular(10),
               ),
-              borderRadius: BorderRadius.circular(10),
+              hintText: hintText,
+              suffixIcon: suffixIcon,
             ),
-            hintText: hintText,
-            suffixIcon: suffixIcon,
+            maxLines: maxLines,
           ),
-          maxLines: maxLines,
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

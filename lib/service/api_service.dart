@@ -8,6 +8,7 @@ import '../config/app_config.dart';
 import '../config/routes/routes_provider.dart';
 import '../domain/ow_api.dart';
 import '../domain/request/member_page_request/asset_info_list_request.dart';
+import '../domain/request/save_coin_request/save_coin_history_request.dart';
 import '../domain/request/save_coin_request/send_save_coin_request.dart';
 import '../domain/response/api_response.dart';
 import '../domain/response/flow_page_response/asset_info_list_response.dart';
@@ -17,6 +18,7 @@ import '../domain/response/public_response/digital_bank_response.dart';
 import '../domain/response/public_response/normal_response.dart';
 import '../domain/response/public_response/upload_image_response.dart';
 import '../domain/response/public_response/user_info_response.dart';
+import '../domain/response/save_coin_response/save_coin_history_response.dart';
 import '../domain/response/save_coin_response/save_coin_rate_response.dart';
 
 class ApiService {
@@ -92,7 +94,7 @@ class ApiService {
 
   /// 獲取資金流水列表
   Future<AssetInfoListResponse> getAssetCashList(AssetInfoListRequest request) async {
-    final HttpResponse<AssetInfoListResponse> response = await OwApi(dio).getAssetCashList("", request.page, request.limit, request.type);
+    final HttpResponse<AssetInfoListResponse> response = await OwApi(dio).getAssetCashList(AppConfig.token, request.page, request.limit, request.type);
     return response.data;
   }
 
@@ -111,7 +113,20 @@ class ApiService {
   /// 發送存幣生息訂單
   Future<ApiResponse<String>> sendSaveCoin(SendSaveCoinRequest request) async {
     final HttpResponse<ApiResponse<String>> response =
-    await OwApi(dio).sendSaveCoin(AppConfig.token, request.id, request.investedAmount, request.autoSubscribe, request.payPassword);
+        await OwApi(dio).sendSaveCoin(AppConfig.token, request.id, request.investedAmount, request.autoSubscribe, request.payPassword);
+    return response.data;
+  }
+
+  /// 獲取存幣生息歷史紀錄
+  Future<SaveCoinHistoryResponse> getSaveCoinHistory(SaveCoinHistoryRequest request) async {
+    final HttpResponse<SaveCoinHistoryResponse> response = await OwApi(dio).getSaveCoinHistory(
+        AppConfig.token, request.page, request.limit, request.assetType, request.optionType, request.status, request.startTime, request.endTime);
+    return response.data;
+  }
+
+  /// 修改自動申購
+  Future<NormalResponse> updateAutoSubscribe(int id, int autoSubscribe) async {
+    final HttpResponse<NormalResponse> response = await OwApi(dio).updateAutoSubscribe(AppConfig.token, id, autoSubscribe);
     return response.data;
   }
 }

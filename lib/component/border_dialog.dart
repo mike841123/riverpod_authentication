@@ -26,7 +26,7 @@ class BorderDialog extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                 decoration: const BoxDecoration(
                   border: Border(
                     bottom: BorderSide(color: Color(0xff0566a7), width: 2),

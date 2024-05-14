@@ -33,8 +33,6 @@ class _CheckWidgetState extends State<CheckWidget> {
     Color getColor(Set<MaterialState> states) {
       return Colors.white;
     }
-
-
     return ElevatedButton(
       style: transparentButtonStyle(textHeight: 0, onPrimary: Colors.transparent),
       onPressed: () {
@@ -61,12 +59,12 @@ class _CheckWidgetState extends State<CheckWidget> {
               },
             ),
           ),
-          Gap(6),
+          const Gap(6),
           widget.textWidth == null
               ? Flexible(
                   child: Text(
                     widget.text,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontFamily: 'Inter',
                       color: Colors.white,
                       fontSize: 14,

@@ -61,6 +61,8 @@ class SaveCoinHistory {
   String redeemDate;
   String payInterestDate;
   String createTime;
+  @JsonKey(defaultValue: 0)
+  int? currentPage = 0;
 
   factory SaveCoinHistory.fromJson(Map<String, dynamic> json) => _$SaveCoinHistoryFromJson(json);
 

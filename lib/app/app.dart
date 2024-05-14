@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import '../config/routes/routes_provider.dart';
 
 class InfiniteScrollApp extends ConsumerWidget {
@@ -16,6 +17,7 @@ class InfiniteScrollApp extends ConsumerWidget {
         useMaterial3: true,
       ),
       routerConfig: route,
+      builder: FlutterSmartDialog.init(),
     );
   }
 }
