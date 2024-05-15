@@ -52,14 +52,14 @@ class InvestedRecordNotifier extends StateNotifier<InvestedRecordState> {
     }
   }
 
-  // Future<void> updateList({required int page}) async {
-  //   final post = await _fetchPosts(page: page);
-  //   if (post.isNotEmpty) {
-  //     state = state.copyWith(
-  //       investedRecordList: post,
-  //     );
-  //   }
-  // }
+  Future<void> updateList({required int page}) async {
+    final post = await _fetchPosts(page: page);
+    if (post.isNotEmpty) {
+      state = state.copyWith(
+        investedRecordList: post,
+      );
+    }
+  }
 
   Future<List<SaveCoinHistory>> _fetchPosts({int? page}) async {
     print("第${state.currPage}頁");
@@ -79,11 +79,9 @@ class InvestedRecordNotifier extends StateNotifier<InvestedRecordState> {
     }
   }
 
-  Future<void> updateAutoSubscribe(int id, int autoSubscribe, int page) async {
+  Future<NormalResponse> updateAutoSubscribe(int id, int autoSubscribe, int page) async {
     final repository = ref.read(investedRecordRepositoryProvider);
     NormalResponse response = await repository.updateAutoSubscribe(id, autoSubscribe);
-    if (response.code == 0) {
-      // updateList(page: page);
-    }
+    return response;
   }
 }

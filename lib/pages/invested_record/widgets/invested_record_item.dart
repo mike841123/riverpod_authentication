@@ -5,22 +5,34 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:infinite_scroll/component/border_dialog.dart';
 import 'package:infinite_scroll/component/check_widget.dart';
+import 'package:infinite_scroll/domain/response/public_response/normal_response.dart';
 import 'package:infinite_scroll/pages/invested_record/providers/invested_record_providers.dart';
 import 'package:infinite_scroll/pages/invested_record/state/invested_record_state.dart';
 
 import '../../../domain/response/save_coin_response/save_coin_history_response.dart';
 import '../../../util/widget_util.dart';
 
-class InvestedRecordItem extends ConsumerWidget {
+class InvestedRecordItem extends ConsumerStatefulWidget {
   const InvestedRecordItem({super.key, required this.record, required this.index});
 
   final SaveCoinHistory record;
   final int index;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    CheckController isAutoSubscribe = CheckController();
-    isAutoSubscribe.status = record.autoSubscribe == 0 ? false : true;
+  ConsumerState<InvestedRecordItem> createState() => _InvestedRecordItemState();
+}
+
+class _InvestedRecordItemState extends ConsumerState<InvestedRecordItem> {
+  CheckController isAutoSubscribe = CheckController();
+
+  @override
+  void initState() {
+    super.initState();
+    isAutoSubscribe.status = widget.record.autoSubscribe == 0 ? false : true;
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
         color: const Color(0xff29305e),
@@ -28,18 +40,18 @@ class InvestedRecordItem extends ConsumerWidget {
       ),
       child: Column(
         children: [
-          tableItem(title: "num", content: index.toString(), borderWidth: 4),
-          tableItem(title: "num", content: (index ~/ 10 + 1).toString(), borderWidth: 4),
-          tableItem(title: "訂單編號", content: record.orderId, borderWidth: 4),
-          tableItem(title: "幣種", content: record.assetType.toString()),
-          tableItem(title: "存幣金額", content: record.investedAmount.toStringAsFixed(5)),
-          tableItem(title: "訂單狀態", content: _getStatus(record.status)),
+          tableItem(title: "num", content: widget.index.toString(), borderWidth: 4),
+          tableItem(title: "num", content: (widget.index ~/ 10 + 1).toString(), borderWidth: 4),
+          tableItem(title: "訂單編號", content: widget.record.orderId, borderWidth: 4),
+          tableItem(title: "幣種", content: widget.record.assetType.toString()),
+          tableItem(title: "存幣金額", content: widget.record.investedAmount.toStringAsFixed(5)),
+          tableItem(title: "訂單狀態", content: _getStatus(widget.record.status)),
           tableItem(
               title: "贖回",
               content: "",
-              opBtnTitle: record.status == OrderType.op2.type ? "贖回" : "",
+              opBtnTitle: widget.record.status == OrderType.op2.type ? "贖回" : "",
               opTap: () {
-                print(record.currentPage);
+                print(widget.record.currentPage);
               }),
           tableItem(
             title: "更多",
@@ -47,7 +59,7 @@ class InvestedRecordItem extends ConsumerWidget {
             opBtnTitle: "查看明細",
             isShowLine: false,
             opTap: () {
-              print(index);
+              print(widget.index);
               // SmartDialog.show(
               //   builder: (_) {
               //     return DetailsDialog(
@@ -60,9 +72,14 @@ class InvestedRecordItem extends ConsumerWidget {
           CheckWidget(
             isAutoSubscribe,
             text: "自動續存",
-            onTap: (value) {
-              if (value != null) {
-                ref.read(investedRecordProvider.notifier).updateAutoSubscribe(record.id, value ? 1 : 0, index ~/ 10 + 1);
+            onTap: (value) async {
+              NormalResponse response = await ref
+                  .read(investedRecordProvider.notifier)
+                  .updateAutoSubscribe(widget.record.id, isAutoSubscribe.status ? 0 : 1, widget.record.currentPage ?? 0);
+              if (response.code == 0) {
+                setState(() {
+                  isAutoSubscribe.status = !isAutoSubscribe.status;
+                });
               }
             },
           ),
@@ -113,9 +130,11 @@ class DetailsDialog extends ConsumerWidget {
         child: CheckWidget(
           isAutoSubscribe,
           text: "自動續存",
-          onTap: (value) {
+          onTap: (value) async {
             if (value != null) {
-              ref.read(investedRecordProvider.notifier).updateAutoSubscribe(record.id, value ? 1 : 0, record.currentPage ?? 0);
+              await ref.read(investedRecordProvider.notifier).updateAutoSubscribe(record.id, value ? 1 : 0, record.currentPage ?? 0);
+              print(value);
+              isAutoSubscribe.status = value;
             }
           },
         ),

@@ -33,13 +33,11 @@ class _CheckWidgetState extends State<CheckWidget> {
     Color getColor(Set<MaterialState> states) {
       return Colors.white;
     }
+
     return ElevatedButton(
       style: transparentButtonStyle(textHeight: 0, onPrimary: Colors.transparent),
       onPressed: () {
-        setState(() {
-          widget.controller.status = !widget.controller.status;
-          _handleTap(widget.controller.status);
-        });
+        _handleTap(widget.controller.status);
       },
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -52,10 +50,7 @@ class _CheckWidgetState extends State<CheckWidget> {
               fillColor: MaterialStateProperty.resolveWith(getColor),
               value: widget.controller.status,
               onChanged: (bool? value) {
-                _handleTap(value!);
-                setState(() {
-                  widget.controller.status = value;
-                });
+                _handleTap(widget.controller.status);
               },
             ),
           ),

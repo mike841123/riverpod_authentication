@@ -215,6 +215,7 @@ class _InvestedRecordPageState extends ConsumerState<InvestedRecordPage> {
                       child: ListView.separated(
                         itemBuilder: (context, index) {
                           return InvestedRecordItem(
+                            key: UniqueKey(),
                             index: index,
                             record: state.investedRecordList[index],
                           );
