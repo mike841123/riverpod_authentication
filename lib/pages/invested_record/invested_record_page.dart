@@ -25,14 +25,6 @@ class _InvestedRecordPageState extends ConsumerState<InvestedRecordPage> {
   @override
   void initState() {
     super.initState();
-
-    // /// 監聽滑動，滾到底部時加載10筆資料
-    // _scrollController.addListener(() {
-    //   if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent &&
-    //       ref.read(investedRecordProvider).isLock == false) {
-    //     ref.read(investedRecordProvider.notifier).getInvestedRecord();
-    //   }
-    // });
   }
 
   @override
@@ -178,7 +170,7 @@ class _InvestedRecordPageState extends ConsumerState<InvestedRecordPage> {
                     title: "搜索",
                     bgColor: Colors.blue,
                     onTap: () {
-                      // ref.read(investedRecordProvider.notifier).getInvestedRecord(1);
+                      ref.read(investedRecordProvider.notifier).getInvestedRecord();
                     }),
                 const Gap(4),
                 commonBtn(
@@ -215,7 +207,7 @@ class _InvestedRecordPageState extends ConsumerState<InvestedRecordPage> {
                       child: ListView.separated(
                         itemBuilder: (context, index) {
                           return InvestedRecordItem(
-                            key: UniqueKey(),
+                            key: ObjectKey(index),
                             index: index,
                             record: state.investedRecordList[index],
                           );

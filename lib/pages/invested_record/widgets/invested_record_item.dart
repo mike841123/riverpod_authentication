@@ -24,11 +24,13 @@ class InvestedRecordItem extends ConsumerStatefulWidget {
 
 class _InvestedRecordItemState extends ConsumerState<InvestedRecordItem> {
   CheckController isAutoSubscribe = CheckController();
+  late SaveCoinHistory record;
 
   @override
   void initState() {
     super.initState();
     isAutoSubscribe.status = widget.record.autoSubscribe == 0 ? false : true;
+    record = widget.record;
   }
 
   @override
@@ -42,14 +44,14 @@ class _InvestedRecordItemState extends ConsumerState<InvestedRecordItem> {
         children: [
           tableItem(title: "num", content: widget.index.toString(), borderWidth: 4),
           tableItem(title: "num", content: (widget.index ~/ 10 + 1).toString(), borderWidth: 4),
-          tableItem(title: "訂單編號", content: widget.record.orderId, borderWidth: 4),
-          tableItem(title: "幣種", content: widget.record.assetType.toString()),
-          tableItem(title: "存幣金額", content: widget.record.investedAmount.toStringAsFixed(5)),
-          tableItem(title: "訂單狀態", content: _getStatus(widget.record.status)),
+          tableItem(title: "訂單編號", content: record.orderId, borderWidth: 4),
+          tableItem(title: "幣種", content: record.assetType.toString()),
+          tableItem(title: "存幣金額", content: record.investedAmount.toStringAsFixed(5)),
+          tableItem(title: "訂單狀態", content: _getStatus(record.status)),
           tableItem(
               title: "贖回",
               content: "",
-              opBtnTitle: widget.record.status == OrderType.op2.type ? "贖回" : "",
+              opBtnTitle: record.status == OrderType.op2.type ? "贖回" : "",
               opTap: () {
                 print(widget.record.currentPage);
               }),
@@ -73,11 +75,13 @@ class _InvestedRecordItemState extends ConsumerState<InvestedRecordItem> {
             isAutoSubscribe,
             text: "自動續存",
             onTap: (value) async {
-              NormalResponse response = await ref
-                  .read(investedRecordProvider.notifier)
-                  .updateAutoSubscribe(widget.record.id, isAutoSubscribe.status ? 0 : 1, widget.record.currentPage ?? 0);
+              NormalResponse response = await ref.read(investedRecordProvider.notifier).updateAutoSubscribe(record.id, isAutoSubscribe.status ? 0 : 1);
               if (response.code == 0) {
+                SaveCoinHistory history = await ref.read(investedRecordProvider.notifier).getItemAtIndex(index: widget.index);
+                print("getItemByIndex:${history.id}");
+                print("select Index:${record.id}");
                 setState(() {
+                  history = history;
                   isAutoSubscribe.status = !isAutoSubscribe.status;
                 });
               }
@@ -132,7 +136,7 @@ class DetailsDialog extends ConsumerWidget {
           text: "自動續存",
           onTap: (value) async {
             if (value != null) {
-              await ref.read(investedRecordProvider.notifier).updateAutoSubscribe(record.id, value ? 1 : 0, record.currentPage ?? 0);
+              await ref.read(investedRecordProvider.notifier).updateAutoSubscribe(record.id, value ? 1 : 0);
               print(value);
               isAutoSubscribe.status = value;
             }

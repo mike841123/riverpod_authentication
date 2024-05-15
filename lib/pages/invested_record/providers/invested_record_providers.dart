@@ -32,14 +32,14 @@ class InvestedRecordNotifier extends StateNotifier<InvestedRecordState> {
     );
   }
 
-  Future<void> getInvestedRecord({int? page}) async {
+  Future<void> getInvestedRecord() async {
     try {
       if (state.status == InvestedRecordPageStatus.initial) {
         final post = await _fetchPosts();
         state = state.copyWith(investedRecordList: post, status: InvestedRecordPageStatus.success, currPage: 2, isLoadMore: true);
         return;
       }
-      final post = await _fetchPosts(page: page);
+      final post = await _fetchPosts(page: state.currPage);
       if (post.isNotEmpty) {
         state = state.copyWith(
           isLoadMore: false,
@@ -52,20 +52,11 @@ class InvestedRecordNotifier extends StateNotifier<InvestedRecordState> {
     }
   }
 
-  Future<void> updateList({required int page}) async {
-    final post = await _fetchPosts(page: page);
-    if (post.isNotEmpty) {
-      state = state.copyWith(
-        investedRecordList: post,
-      );
-    }
-  }
-
-  Future<List<SaveCoinHistory>> _fetchPosts({int? page}) async {
-    print("第${state.currPage}頁");
+  Future<List<SaveCoinHistory>> _fetchPosts({int page = 1}) async {
+    print("取得第${page}頁的資料");
     final repository = ref.read(investedRecordRepositoryProvider);
     SaveCoinHistoryResponse response = await repository.getInvestedRecord(SaveCoinHistoryRequest(
-      page: page ?? state.currPage,
+      page: page,
       limit: 10,
       assetType: state.coinTypeSelectedLabel == null ? "" : "&assetType=${state.coinTypeSelectedLabel?.label.type}",
       optionType: state.orderTypeSelectedLabel == null ? "" : "&optionType=${state.coinTypeSelectedLabel?.label.type}",
@@ -79,9 +70,20 @@ class InvestedRecordNotifier extends StateNotifier<InvestedRecordState> {
     }
   }
 
-  Future<NormalResponse> updateAutoSubscribe(int id, int autoSubscribe, int page) async {
+  /// 自動續存
+  Future<NormalResponse> updateAutoSubscribe(int id, int autoSubscribe) async {
     final repository = ref.read(investedRecordRepositoryProvider);
     NormalResponse response = await repository.updateAutoSubscribe(id, autoSubscribe);
+    SmartDialog.showToast(response.msg);
     return response;
+  }
+
+  /// 取得欲刷新的item
+  Future<SaveCoinHistory> getItemAtIndex({required int index}) async {
+    print("搜尋index為:$index的item");
+    int indexInPage = index - (index ~/ 10) * 10;
+    print("回傳十筆中的第幾筆資料:$indexInPage");
+    final post = await _fetchPosts(page: index ~/ 10 + 1);
+    return post[index < 10 ? index : indexInPage];
   }
 }
