@@ -12,12 +12,13 @@ import '../../../domain/response/save_coin_response/save_coin_history_response.d
 import '../../../util/widget_util.dart';
 
 class InvestedRecordItem extends ConsumerWidget {
-  const InvestedRecordItem({super.key, required this.record});
+  const InvestedRecordItem({super.key, required this.record, required this.index});
 
   final SaveCoinHistory record;
+  final int index;
 
   @override
-  Widget build(BuildContext context,WidgetRef ref) {
+  Widget build(BuildContext context, WidgetRef ref) {
     CheckController isAutoSubscribe = CheckController();
     isAutoSubscribe.status = record.autoSubscribe == 0 ? false : true;
     return Container(
@@ -27,6 +28,8 @@ class InvestedRecordItem extends ConsumerWidget {
       ),
       child: Column(
         children: [
+          tableItem(title: "num", content: index.toString(), borderWidth: 4),
+          tableItem(title: "num", content: (index ~/ 10 + 1).toString(), borderWidth: 4),
           tableItem(title: "訂單編號", content: record.orderId, borderWidth: 4),
           tableItem(title: "幣種", content: record.assetType.toString()),
           tableItem(title: "存幣金額", content: record.investedAmount.toStringAsFixed(5)),
@@ -44,13 +47,14 @@ class InvestedRecordItem extends ConsumerWidget {
             opBtnTitle: "查看明細",
             isShowLine: false,
             opTap: () {
-              SmartDialog.show(
-                builder: (_) {
-                  return DetailsDialog(
-                    record: record,
-                  );
-                },
-              );
+              print(index);
+              // SmartDialog.show(
+              //   builder: (_) {
+              //     return DetailsDialog(
+              //       record: record,
+              //     );
+              //   },
+              // );
             },
           ),
           CheckWidget(
@@ -58,7 +62,7 @@ class InvestedRecordItem extends ConsumerWidget {
             text: "自動續存",
             onTap: (value) {
               if (value != null) {
-                ref.read(investedRecordProvider.notifier).updateAutoSubscribe(record.id, value ? 1 : 0, record.currentPage ?? 0);
+                ref.read(investedRecordProvider.notifier).updateAutoSubscribe(record.id, value ? 1 : 0, index ~/ 10 + 1);
               }
             },
           ),

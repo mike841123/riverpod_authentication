@@ -13,7 +13,7 @@ final investedRecordProvider = StateNotifierProvider.autoDispose<InvestedRecordN
 
 class InvestedRecordNotifier extends StateNotifier<InvestedRecordState> {
   InvestedRecordNotifier(this.ref) : super(const InvestedRecordState()) {
-    getInvestedRecord(1);
+    getInvestedRecord();
   }
 
   final Ref ref;
@@ -32,13 +32,40 @@ class InvestedRecordNotifier extends StateNotifier<InvestedRecordState> {
     );
   }
 
-  Future<void> getInvestedRecord(int page, {bool isInit = true}) async {
-    if (isInit) {
-      state = state.copyWith(status: InvestedRecordPageStatus.initial);
+  Future<void> getInvestedRecord({int? page}) async {
+    try {
+      if (state.status == InvestedRecordPageStatus.initial) {
+        final post = await _fetchPosts();
+        state = state.copyWith(investedRecordList: post, status: InvestedRecordPageStatus.success, currPage: 2, isLoadMore: true);
+        return;
+      }
+      final post = await _fetchPosts(page: page);
+      if (post.isNotEmpty) {
+        state = state.copyWith(
+          isLoadMore: false,
+          currPage: state.currPage + 1,
+          investedRecordList: List.of(state.investedRecordList)..addAll(post),
+        );
+      }
+    } catch (_) {
+      state = state.copyWith(status: InvestedRecordPageStatus.failure);
     }
+  }
+
+  // Future<void> updateList({required int page}) async {
+  //   final post = await _fetchPosts(page: page);
+  //   if (post.isNotEmpty) {
+  //     state = state.copyWith(
+  //       investedRecordList: post,
+  //     );
+  //   }
+  // }
+
+  Future<List<SaveCoinHistory>> _fetchPosts({int? page}) async {
+    print("第${state.currPage}頁");
     final repository = ref.read(investedRecordRepositoryProvider);
     SaveCoinHistoryResponse response = await repository.getInvestedRecord(SaveCoinHistoryRequest(
-      page: page,
+      page: page ?? state.currPage,
       limit: 10,
       assetType: state.coinTypeSelectedLabel == null ? "" : "&assetType=${state.coinTypeSelectedLabel?.label.type}",
       optionType: state.orderTypeSelectedLabel == null ? "" : "&optionType=${state.coinTypeSelectedLabel?.label.type}",
@@ -46,35 +73,9 @@ class InvestedRecordNotifier extends StateNotifier<InvestedRecordState> {
       endTime: (state.endDate ?? TextEditingController()).text.isEmpty ? "" : "&endTime=${state.endDate}",
     ));
     if (response.code == 0) {
-      for (int i = 0; i < (response.data?.records ?? []).length; i++) {
-        response.data?.records[i].currentPage = response.data?.current;
-      }
-      state = state.copyWith(total: response.data?.total, investedRecordList: response.data?.records, status: InvestedRecordPageStatus.success);
+      return response.data?.records ?? [];
     } else {
-      state = state.copyWith(status: InvestedRecordPageStatus.failure);
-    }
-  }
-
-  Future<void> updateInvestedRecord() async {
-    int currPage = state.currPage;
-    final repository = ref.read(investedRecordRepositoryProvider);
-    state = state.copyWith(isLock: true);
-    SaveCoinHistoryResponse response = await repository.getInvestedRecord(SaveCoinHistoryRequest(
-      page: currPage + 1,
-      limit: 10,
-      assetType: state.coinTypeSelectedLabel == null ? "" : "&assetType=${state.coinTypeSelectedLabel?.label.type}",
-      optionType: state.orderTypeSelectedLabel == null ? "" : "&optionType=${state.coinTypeSelectedLabel?.label.type}",
-      startTime: (state.startDate ?? TextEditingController()).text.isEmpty ? "" : "&startTime=${state.startDate}",
-      endTime: (state.endDate ?? TextEditingController()).text.isEmpty ? "" : "&endTime=${state.endDate}",
-    ));
-    if (response.data!.records.isNotEmpty) {
-      for (int i = 0; i < (response.data?.records ?? []).length; i++) {
-        response.data?.records[i].currentPage = response.data?.current;
-      }
-      state = state.copyWith(
-          currPage: currPage + 1,
-          investedRecordList: List.of(state.investedRecordList as Iterable<SaveCoinHistory>)..addAll(response.data!.records),
-          isLock: false);
+      return [];
     }
   }
 
@@ -82,7 +83,7 @@ class InvestedRecordNotifier extends StateNotifier<InvestedRecordState> {
     final repository = ref.read(investedRecordRepositoryProvider);
     NormalResponse response = await repository.updateAutoSubscribe(id, autoSubscribe);
     if (response.code == 0) {
-      SmartDialog.dismiss();
+      // updateList(page: page);
     }
   }
 }

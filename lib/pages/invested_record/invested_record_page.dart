@@ -7,6 +7,7 @@ import 'package:gap/gap.dart';
 import 'package:infinite_scroll/pages/invested_record/providers/invested_record_providers.dart';
 import 'package:infinite_scroll/pages/invested_record/state/invested_record_state.dart';
 import 'package:infinite_scroll/pages/invested_record/widgets/invested_record_item.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import '../../component/date_picker.dart';
 import '../../util/widget_util.dart';
@@ -19,19 +20,19 @@ class InvestedRecordPage extends ConsumerStatefulWidget {
 }
 
 class _InvestedRecordPageState extends ConsumerState<InvestedRecordPage> {
-  final ScrollController _scrollController = ScrollController();
+  final RefreshController _refreshController = RefreshController();
 
   @override
   void initState() {
     super.initState();
 
-    /// 監聽滑動，滾到底部時加載10筆資料
-    _scrollController.addListener(() {
-      if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent &&
-          ref.read(investedRecordProvider).isLock == false) {
-        ref.read(investedRecordProvider.notifier).updateInvestedRecord();
-      }
-    });
+    // /// 監聽滑動，滾到底部時加載10筆資料
+    // _scrollController.addListener(() {
+    //   if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent &&
+    //       ref.read(investedRecordProvider).isLock == false) {
+    //     ref.read(investedRecordProvider.notifier).getInvestedRecord();
+    //   }
+    // });
   }
 
   @override
@@ -177,7 +178,7 @@ class _InvestedRecordPageState extends ConsumerState<InvestedRecordPage> {
                     title: "搜索",
                     bgColor: Colors.blue,
                     onTap: () {
-                      ref.read(investedRecordProvider.notifier).getInvestedRecord(1);
+                      // ref.read(investedRecordProvider.notifier).getInvestedRecord(1);
                     }),
                 const Gap(4),
                 commonBtn(
@@ -197,17 +198,32 @@ class _InvestedRecordPageState extends ConsumerState<InvestedRecordPage> {
                 // api回傳成功
                 case InvestedRecordPageStatus.success:
                   return Expanded(
-                    child: ListView.separated(
-                      controller: _scrollController,
-                      itemBuilder: (context, index) {
-                        return InvestedRecordItem(
-                          record: state.investedRecordList[index],
-                        );
+                    child: SmartRefresher(
+                      enablePullUp: true,
+                      enablePullDown: true,
+                      controller: _refreshController,
+                      onRefresh: () async {
+                        await ref.read(investedRecordProvider.notifier).getInvestedRecord();
+                        _refreshController.refreshCompleted();
                       },
-                      separatorBuilder: (context, index) {
-                        return const Divider();
+                      onLoading: () async {
+                        if (state.isLoadMore) {
+                          await ref.read(investedRecordProvider.notifier).getInvestedRecord();
+                          _refreshController.loadComplete();
+                        }
                       },
-                      itemCount: state.investedRecordList.length,
+                      child: ListView.separated(
+                        itemBuilder: (context, index) {
+                          return InvestedRecordItem(
+                            index: index,
+                            record: state.investedRecordList[index],
+                          );
+                        },
+                        itemCount: state.investedRecordList.length,
+                        separatorBuilder: (BuildContext context, int index) {
+                          return const Gap(8);
+                        },
+                      ),
                     ),
                   );
                 default:

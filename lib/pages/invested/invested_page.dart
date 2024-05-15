@@ -32,7 +32,7 @@ class _InvestedPageState extends ConsumerState<InvestedPage> {
         child: Column(
           children: [
             CachedNetworkImage(
-              imageUrl: "",
+              imageUrl: "https://1.bp.blogspot.com/-h2NUUHtQhSc/X2ERpZrurFI/AAAAAAABsRQ/3FyL3U2fGmgrIETJ8bYVj69gPcxEoSh-wCLcBGAsYHQ/s1215/875008.jpg",
               height: 200,
               width: MediaQuery.sizeOf(context).width,
               fit: BoxFit.fitWidth,

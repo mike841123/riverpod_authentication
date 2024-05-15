@@ -21,10 +21,9 @@ class InvestedRecordState extends Equatable {
     this.orderTypeSelectedLabel,
     this.startDate,
     this.endDate,
-    this.total = 0,
     this.currPage = 1,
     this.investedRecordList = const [],
-    this.isLock = false,
+    this.isLoadMore = false,
   });
 
   final SaveCoinRateResponse? saveCoinRateResponse;
@@ -35,10 +34,9 @@ class InvestedRecordState extends Equatable {
   final InvestedOrderTypeLabel? orderTypeSelectedLabel;
   final TextEditingController? startDate;
   final TextEditingController? endDate;
-  final int total;
   final int currPage;
   final List<SaveCoinHistory> investedRecordList;
-  final bool isLock;
+  final bool isLoadMore;
 
   InvestedRecordState copyWith({
     SaveCoinRateResponse? saveCoinRateResponse,
@@ -50,10 +48,9 @@ class InvestedRecordState extends Equatable {
     TextEditingController? startDate,
     TextEditingController? endDate,
     bool isClearSearch = false,
-    int? total,
     int? currPage,
     List<SaveCoinHistory>? investedRecordList,
-    bool? isLock,
+    bool? isLoadMore,
   }) {
     return InvestedRecordState(
       saveCoinRateResponse: saveCoinRateResponse ?? this.saveCoinRateResponse,
@@ -64,10 +61,9 @@ class InvestedRecordState extends Equatable {
       orderTypeSelectedLabel: isClearSearch ? null : orderTypeSelectedLabel ?? this.orderTypeSelectedLabel,
       startDate: isClearSearch ? TextEditingController() : startDate ?? this.startDate,
       endDate: isClearSearch ? TextEditingController() : endDate ?? this.endDate,
-      total: total ?? this.total,
       currPage: currPage ?? this.currPage,
       investedRecordList: investedRecordList ?? this.investedRecordList,
-      isLock: isLock ?? this.isLock,
+      isLoadMore: isLoadMore ?? this.isLoadMore,
     );
   }
 
@@ -81,10 +77,9 @@ class InvestedRecordState extends Equatable {
         orderTypeSelectedLabel!,
         startDate ?? TextEditingController(),
         endDate ?? TextEditingController(),
-        total,
         currPage,
         investedRecordList,
-        isLock,
+        isLoadMore,
       ];
 }
 
