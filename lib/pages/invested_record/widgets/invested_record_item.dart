@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:infinite_scroll/component/border_dialog.dart';
 import 'package:infinite_scroll/component/check_widget.dart';
 import 'package:infinite_scroll/domain/response/public_response/normal_response.dart';
@@ -42,10 +41,10 @@ class _InvestedRecordItemState extends ConsumerState<InvestedRecordItem> {
       ),
       child: Column(
         children: [
-          tableItem(title: "num", content: widget.index.toString(), borderWidth: 4),
-          tableItem(title: "num", content: (widget.index ~/ 10 + 1).toString(), borderWidth: 4),
+          tableItem(title: "index", content: widget.index.toString(), borderWidth: 4),
+          tableItem(title: "page", content: (widget.index ~/ 10 + 1).toString(), borderWidth: 4),
           tableItem(title: "訂單編號", content: record.orderId, borderWidth: 4),
-          tableItem(title: "幣種", content: record.assetType.toString()),
+          tableItem(title: "幣種", content: _getCoinType(record.assetType)),
           tableItem(title: "存幣金額", content: record.investedAmount.toStringAsFixed(5)),
           tableItem(title: "訂單狀態", content: _getStatus(record.status)),
           tableItem(
@@ -102,6 +101,17 @@ class _InvestedRecordItemState extends ConsumerState<InvestedRecordItem> {
         return OrderType.op3.title;
       case 4:
         return OrderType.op4.title;
+      default:
+        return "";
+    }
+  }
+
+  String _getCoinType(int assetType) {
+    switch(assetType) {
+      case 1:
+        return CoinType.usdt.title;
+      case 35:
+        return CoinType.fil.title;
       default:
         return "";
     }

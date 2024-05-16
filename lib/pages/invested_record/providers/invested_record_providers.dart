@@ -13,7 +13,7 @@ final investedRecordProvider = StateNotifierProvider.autoDispose<InvestedRecordN
 
 class InvestedRecordNotifier extends StateNotifier<InvestedRecordState> {
   InvestedRecordNotifier(this.ref) : super(const InvestedRecordState()) {
-    getInvestedRecord();
+    getInvestedRecord(isInit: true);
   }
 
   final Ref ref;
@@ -32,9 +32,10 @@ class InvestedRecordNotifier extends StateNotifier<InvestedRecordState> {
     );
   }
 
-  Future<void> getInvestedRecord() async {
+  Future<void> getInvestedRecord({bool isInit = false}) async {
     try {
-      if (state.status == InvestedRecordPageStatus.initial) {
+      if (state.status == InvestedRecordPageStatus.initial || isInit) {
+        state = state.copyWith(status: InvestedRecordPageStatus.initial);
         final post = await _fetchPosts();
         state = state.copyWith(investedRecordList: post, status: InvestedRecordPageStatus.success, currPage: 2, isLoadMore: true);
         return;
@@ -59,7 +60,7 @@ class InvestedRecordNotifier extends StateNotifier<InvestedRecordState> {
       page: page,
       limit: 10,
       assetType: state.coinTypeSelectedLabel == null ? "" : "&assetType=${state.coinTypeSelectedLabel?.label.type}",
-      optionType: state.orderTypeSelectedLabel == null ? "" : "&optionType=${state.coinTypeSelectedLabel?.label.type}",
+      optionType: state.orderTypeSelectedLabel == null ? "" : "&status=${state.orderTypeSelectedLabel?.label.type}",
       startTime: (state.startDate ?? TextEditingController()).text.isEmpty ? "" : "&startTime=${state.startDate}",
       endTime: (state.endDate ?? TextEditingController()).text.isEmpty ? "" : "&endTime=${state.endDate}",
     ));
