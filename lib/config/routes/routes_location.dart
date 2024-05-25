@@ -9,4 +9,6 @@ class RouteLocation {
   static String get flow => '/flow';
   static String get invested => '/invested';
   static String get investedRecord => '/investedRecord';
+  static String get insuranceManagement => '/insuranceManagement';
+  static String get insuranceRegister => '/insuranceRegister';
 }

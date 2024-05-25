@@ -4,6 +4,10 @@ import 'package:dio/dio.dart' hide Headers;
 import 'package:infinite_scroll/domain/response/api_response.dart';
 import 'package:infinite_scroll/domain/response/flow_page_response/asset_info_list_response.dart';
 import 'package:infinite_scroll/domain/response/home_page_response/banner_list_response.dart';
+import 'package:infinite_scroll/domain/response/insurance_page_response/exchange_rate_response.dart';
+import 'package:infinite_scroll/domain/response/insurance_page_response/insurance_info_response.dart';
+import 'package:infinite_scroll/domain/response/insurance_page_response/insurance_order_response.dart';
+import 'package:infinite_scroll/domain/response/insurance_page_response/insurance_qrcode_response.dart';
 import 'package:infinite_scroll/domain/response/login_page_response/login_response.dart';
 import 'package:infinite_scroll/domain/response/public_response/digital_bank_response.dart';
 import 'package:infinite_scroll/domain/response/public_response/normal_response.dart';
@@ -75,5 +79,26 @@ abstract class OwApi {
   /// 修改自動申購
   @POST("/invested/updateAutoSubscribe")
   Future<HttpResponse<NormalResponse>> updateAutoSubscribe(@Header("authorization") String token, @Field() int id, @Field() int autoSubscribe,
+      {@CancelRequest() CancelToken? cancelToken});
+
+  @GET("/insurance/getAllInsuranceOrder")
+  Future<HttpResponse<InsuranceOrderResponse>> getAllInsuranceOrder(
+      @Header("authorization") String token, @Query("username") String username, @Query("limit") int limit, @Query("page") int page,
+      {@CancelRequest() CancelToken? cancelToken});
+
+  @GET("/insurance/getAllInsuranceInfo")
+  Future<HttpResponse<InsuranceInfoResponse>> getAllInsuranceInfo(@Header("authorization") String token, {@CancelRequest() CancelToken? cancelToken});
+
+  @GET("/membercountry/exchangeRate")
+  Future<HttpResponse<ExchangeRateResponse>> getExchangeRate(@Header("authorization") String token, {@CancelRequest() CancelToken? cancelToken});
+
+  @GET("/insurance/getCustomerQrCode")
+  Future<HttpResponse<InsuranceQrcodeResponse>> getCustomerQrCode(@Header("authorization") String token, @Query("countryId") int countryId,
+      {@CancelRequest() CancelToken? cancelToken});
+
+  /// 上傳S3圖片
+  @POST("/oss-attachment/upload-image-s3")
+  @MultiPart()
+  Future<HttpResponse<UploadImageResponse>> uploadImageS3(@Header("authorization") String token, @Part() List<File> uploadFile, @Part() String path,
       {@CancelRequest() CancelToken? cancelToken});
 }

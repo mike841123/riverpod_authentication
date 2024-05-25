@@ -47,6 +47,40 @@ class UserRepositoryImpl implements UserRepository {
   }
 
   @override
+  Future<UploadImageResponse> uploadImageS3(String path, {bool isMulti = false}) async {
+    UploadImageResponse response = UploadImageResponse();
+    try {
+      ImagePicker imagePicker = ImagePicker();
+      if (isMulti) {
+        await imagePicker.pickMultiImage(maxHeight: 1000, maxWidth: 1000, imageQuality: 50).then((value) async {
+          if (value.isNotEmpty) {
+            print(value);
+            List<File> imageFile = [];
+            for (int i = 0; i < value.length; i++) {
+              imageFile.add(File(value[i].path));
+            }
+            response = await getIt<ApiService>().uploadImageS3(imageFile, "Insurance");
+          }
+        });
+      } else {
+        await imagePicker.pickImage(source: ImageSource.gallery, maxHeight: 1000, maxWidth: 1000, imageQuality: 50).then((value) async {
+          if (value != null) {
+            File imageFile = File(value.path);
+            response = await getIt<ApiService>().uploadImage(imageFile);
+          }
+        });
+      }
+    } catch (e) {
+      print(e);
+      PermissionStatus status = await Permission.photos.status;
+      if (status == PermissionStatus.denied) {
+        print("未開啟相簿權限");
+      }
+    }
+    return response;
+  }
+
+  @override
   Future<DigitalBankResult> getDigitalBankResult() async {
     try {
       DigitalBankResponse response = await getIt<ApiService>().getDigitalBank();

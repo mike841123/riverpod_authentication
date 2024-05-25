@@ -13,6 +13,10 @@ import '../domain/request/save_coin_request/send_save_coin_request.dart';
 import '../domain/response/api_response.dart';
 import '../domain/response/flow_page_response/asset_info_list_response.dart';
 import '../domain/response/home_page_response/banner_list_response.dart';
+import '../domain/response/insurance_page_response/exchange_rate_response.dart';
+import '../domain/response/insurance_page_response/insurance_info_response.dart';
+import '../domain/response/insurance_page_response/insurance_order_response.dart';
+import '../domain/response/insurance_page_response/insurance_qrcode_response.dart';
 import '../domain/response/login_page_response/login_response.dart';
 import '../domain/response/public_response/digital_bank_response.dart';
 import '../domain/response/public_response/normal_response.dart';
@@ -127,6 +131,32 @@ class ApiService {
   /// 修改自動申購
   Future<NormalResponse> updateAutoSubscribe(int id, int autoSubscribe) async {
     final HttpResponse<NormalResponse> response = await OwApi(dio).updateAutoSubscribe(AppConfig.token, id, autoSubscribe);
+    return response.data;
+  }
+
+  Future<InsuranceOrderResponse> getAllInsuranceOrder({required String username, required int limit, required int page}) async {
+    final HttpResponse<InsuranceOrderResponse> response = await OwApi(dio).getAllInsuranceOrder(AppConfig.token, username, limit, page);
+    return response.data;
+  }
+
+  Future<InsuranceInfoResponse> getAllInsuranceInfo() async {
+    final HttpResponse<InsuranceInfoResponse> response = await OwApi(dio).getAllInsuranceInfo(AppConfig.token);
+    return response.data;
+  }
+
+  Future<ExchangeRateResponse> getExchangeRate() async {
+    final HttpResponse<ExchangeRateResponse> response = await OwApi(dio).getExchangeRate(AppConfig.token);
+    return response.data;
+  }
+
+  Future<InsuranceQrcodeResponse> getCustomerQrCode(int countryId) async {
+    final HttpResponse<InsuranceQrcodeResponse> response = await OwApi(dio).getCustomerQrCode(AppConfig.token, countryId);
+    return response.data;
+  }
+
+  /// 上傳圖片
+  Future<UploadImageResponse> uploadImageS3(List<File> file, String path) async {
+    final HttpResponse<UploadImageResponse> response = await OwApi(dio).uploadImageS3(AppConfig.token, file, path);
     return response.data;
   }
 }

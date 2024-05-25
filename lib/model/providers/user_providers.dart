@@ -32,6 +32,12 @@ class UserNotifier extends StateNotifier<UserState> {
     }
   }
 
+  Future<List<UploadImageResult>> uploadImageS3(String path, {bool isMulti = false}) async {
+    final repository = ref.read(userRepositoryProvider);
+    UploadImageResponse uploadImageResponse = await repository.uploadImageS3(path, isMulti: isMulti);
+    return uploadImageResponse.data ?? [];
+  }
+
   Future<DigitalBankResult> getDigitalBank() async {
     final repository = ref.read(userRepositoryProvider);
     DigitalBankResult digitalBankResult = await repository.getDigitalBankResult();

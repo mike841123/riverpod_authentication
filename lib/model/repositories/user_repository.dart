@@ -9,4 +9,5 @@ abstract class UserRepository {
   Future<UploadImageResponse> uploadImage();
   Future<NormalResponse> memberModifyAvatar(String avatar);
   Future<DigitalBankResult> getDigitalBankResult();
+  Future<UploadImageResponse> uploadImageS3(String path,{bool isMulti = false});
 }

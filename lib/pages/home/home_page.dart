@@ -89,6 +89,13 @@ class HomePage extends StatelessWidget {
             },
             child: Text("go to invested page"),
           ),
+          const Gap(20),
+          ElevatedButton(
+            onPressed: () {
+              context.push(RouteLocation.insuranceManagement);
+            },
+            child: Text("go to insurance management page"),
+          ),
         ],
       ),
     );
