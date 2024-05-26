@@ -19,7 +19,7 @@ import 'package:retrofit/retrofit.dart';
 
 part 'ow_api.g.dart';
 
-@RestApi(baseUrl: "")
+@RestApi(baseUrl: "1")
 abstract class OwApi {
   factory OwApi(Dio dio) = _OwApi;
 
